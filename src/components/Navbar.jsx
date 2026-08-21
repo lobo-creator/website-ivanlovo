@@ -22,14 +22,14 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
   }, [scrollContainer]);
 
   useEffect(() => {
-    const sections = document.querySelectorAll("div[id]");
+    const sections = document.querySelectorAll("[data-scroll-target]");
     const container = scrollContainer?.current;
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActive(entry.target.id);
+            setActive(entry.target.dataset.scrollTarget);
           }
         });
       },
@@ -49,7 +49,7 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
     event.preventDefault();
     setActive(sectionId);
     setToggle(false);
-    onNavigate(sectionId);
+    onNavigate?.(sectionId);
   };
 
   return (
@@ -59,7 +59,7 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
       <div className='w-full flex justify-between items-start mx-auto'>
         <a
           href="#hero"
-          className='flex items-start'
+          className='flex items-start pointer-events-auto'
           onClick={handleNavClick("hero")}
         >
           <p className='text-white text-[26px] lg:text-[36px] font-bold pointer-events-auto cursor-pointer flex'>
@@ -74,11 +74,12 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
               className={`relative flex items-center ${
                 active === nav.id ? "text-white" : "text-slate-500"
               } hover:text-white text-[18px] lg:text-[24px] font-bold pointer-events-auto cursor-pointer`}
+              onClick={handleNavClick(nav.id)}
             >
               {active === nav.id && (
                 <div className="fixed right-10 w-2 h-6 lg:h-8 bg-quaternary"></div>
               )}
-              <a href={`#${nav.id}`} onClick={handleNavClick(nav.id)}>
+              <a href={`#${nav.id}`} className="pointer-events-auto">
                 {nav.title}
               </a>
             </li>
@@ -105,8 +106,9 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
                   className={`font-poppins font-medium cursor-pointer text-[16px] ${
                     active === nav.id ? "text-quaternary" : "text-secondary"
                   }`}
+                  onClick={handleNavClick(nav.id)}
                 >
-                  <a href={`#${nav.id}`} onClick={handleNavClick(nav.id)}>
+                  <a href={`#${nav.id}`} className="pointer-events-auto">
                     {nav.title}
                   </a>
                 </li>
