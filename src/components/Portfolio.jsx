@@ -37,7 +37,7 @@ const ProjectCard = ({
       <div className='relative w-full md:w-3/5'>
         <img
           src={image}
-          alt='project_image'
+          alt={name}
           className='w-full h-auto object-cover md:rounded-3xl'
         />
       </div>
@@ -54,7 +54,7 @@ const Portfolio = () => {
   return (
     <div className='text-center md:text-left md:px-20 lg:px-40'>
       <motion.div variants={textVariant()}>
-        <h2 className={`${styles.sectionText}`}>Portfolio</h2>
+        <h2 className={`${styles.sectionText}`}>Work</h2>
       </motion.div>
 
       <div className='mt-10 md:mt-20 flex flex-col gap-10 md:gap-20'>

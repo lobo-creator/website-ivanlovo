@@ -68,7 +68,7 @@ const Contact = () => {
           <span className='text-white font-medium mt-3'>Message</span>
           <textarea
             name="message"
-            placeholder="Enter your message"
+            placeholder="Tell me about your 3D print or CNC project"
             rows="10"
             className="bg-tertiary p-4 text-white border font-medium"
           />

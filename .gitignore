@@ -27,3 +27,13 @@ dist-ssr
 
 # vscode
 .vscode
+
+# Local source/export drafts
+meshy-download-selected.user.js
+public/parallax/* ok.svg
+src/assets/3d/*
+!src/assets/3d/cyborgwolf.glb
+src/assets/herobg.jpeg
+src/assets/herobg.svg
+src/assets/projbg-vert.jpg
+src/assets/projbg.jpg

@@ -7,15 +7,15 @@ import {
 export const navLinks = [
   {
     id: "hero",
-    title: "Hero",
+    title: "Home",
   },
   {
     id: "portfolio",
-    title: "Portfolio",
+    title: "Work",
   },
   {
     id: "experience",
-    title: "Experience",
+    title: "Services",
   },
   {
     id: "contact",
@@ -25,64 +25,64 @@ export const navLinks = [
 
 const experiences = [
   {
-    title: "YouTube Content Creator",
-    company_name: "Self Employed",
-    date: "2016 - Present",
+    title: "3D Designer",
+    company_name: "Ivan Lovo",
+    date: "Current",
     details: [
-      "Built a subscriber base of over <span style='color: white;'>500,000 subscribers</span> by creating video content to help programmers.",
-      "Crafted visually appealling programming videos that have garnered over <span style='color: white;'>30,000,000 views</span>.",
-      "Produced high-quality educational and entertaining videos for clients including <span style='color: white;'>Intel, JetBrains, and MicroCenter</span>.",
+      "Create precise <span style='color: white;'>3D models</span> for products, parts, prototypes, and custom fabrication projects.",
+      "Translate ideas, references, and measurements into clean digital geometry ready for review and production.",
+      "Balance form, function, proportions, and fabrication constraints from the first concept to the final file.",
     ],
   },
   {
-    title: "Software Developer",
-    company_name: "Indie",
-    date: "2019 - 2023",
+    title: "3D Print Design",
+    company_name: "Print-Ready Files",
+    date: "Current",
     details: [
-      "Developed and delivered custom interdisciplinary coding portfolio for clients including <span style='color: white;'>Nvidia, Hostinger, and Amazon</span>.",
-      "<span style='color: white;'>Designed and developed innovative</span> AI applications and interactive websites.",
-      "<span style='color: white;'>Managed full project lifecycle</span> from concept to deployment in successful and timely project completions.",
+      "Prepare <span style='color: white;'>watertight, print-ready models</span> for FDM, resin, and prototype workflows.",
+      "Optimize parts for wall thickness, orientation, tolerances, assembly, and clean surface quality.",
+      "Deliver practical 3D files that are organized, checked, and ready for slicing or manufacturing review.",
     ],
   },
   {
-    title: "Software Engineer",
-    company_name: "Prime 3",
-    date: "2018 - 2019",
+    title: "CNC Design",
+    company_name: "CNC-Ready Geometry",
+    date: "Current",
     details: [
-      "Built custom enterprise applications for a <span style='color: white;'>Fortune 500 company</span> as a full-stack software engineer.",
-      "Developed and maintained <span style='color: white;'>scalable backend services</span>, ensuring high availability for critical business applications.",
-      "<span style='color: white;'>Collaborated with a team</span> to design and implement front-end interfaces.",
+      "Design <span style='color: white;'>CNC-friendly models</span>, reliefs, panels, molds, signage, and custom fabrication assets.",
+      "Shape geometry with material behavior, machining limits, tool access, and clean finishing in mind.",
+      "Prepare designs for a smoother handoff from visual concept to CNC production workflow.",
     ],
   },
   {
-    title: "Computer Science",
-    company_name: "ODU",
-    date: "2015 - 2018",
+    title: "Digital Fabrication",
+    company_name: "3D Print & CNC",
+    date: "Current",
     details: [
-      "Built a <span style='color: white;'>computer science foundation</span> learning theory, computer architecture, and software engineering.",
-      "Worked and interned at <span style='color: white;'>NASA and Norfolk Southern Railway</span> to gain practical experience in the field of data analysis.",
-      "Acted as a member of the <span style='color: white;'>Association for Computing Machinery</span> (ACM).",
+      "Support projects from <span style='color: white;'>concept to fabrication-ready output</span> with clear file structure and practical deliverables.",
+      "Work with references, dimensions, physical constraints, and end-use requirements to make useful 3D assets.",
+      "Provide final files for prototyping, presentation, print preparation, or CNC production depending on the project.",
     ],
   },
 ];
 
 const portfolio = [
   {
-    name: "Open Source Computer Science Repo",
+    name: "3D Print Ready Models",
     description:
-      "A GitHub repo with over 17,000 stars containing a curated list of free online courses from reputable universities that satisfy undergraduate computer science requirements.",
+      "Custom parts, product concepts, prototypes, and functional objects prepared as clean 3D files for additive manufacturing.",
     image: oscs,
   },
   {
-    name: "Dev Notes",
+    name: "CNC Design Files",
     description:
-      "A newsletter with over 6,000 readers made for software developers to keep up with this rapidly evolving industry, with a sister platform in progress.",
+      "CNC-ready forms, reliefs, panels, molds, and decorative or functional geometry designed with fabrication constraints in mind.",
     image: devnotes,
   },
   {
-    name: "Visually Understanding Algorithms",
+    name: "Prototype Visualization",
     description:
-      "A showcase of animated algorithms coded using TypeScript, with the video garnering over 400,000 views.",
+      "Clear 3D concepts and presentation-ready visuals that help evaluate shape, scale, assembly, and manufacturing direction.",
     image: algorithms,
   },
 ];

@@ -5,9 +5,9 @@ import CanvasLoader from "./Loader";
 import Navbar from "./Navbar";
 import Portfolio from "./Portfolio";
 import Position from "./Position";
-import SpacemanCanvas from "./Spaceman";
+import CyborgWolfCanvas from "./CyborgWolf";
 
 export {
-    CanvasLoader, Contact, Experience, Hero, Navbar, Portfolio, Position, SpacemanCanvas
+    CanvasLoader, Contact, CyborgWolfCanvas, Experience, Hero, Navbar, Portfolio, Position
 };
 
