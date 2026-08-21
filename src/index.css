@@ -35,6 +35,28 @@
   overflow-y: auto;
   overflow-x: hidden;
   perspective: 10px;
+  transition: opacity 180ms ease, filter 180ms ease;
+}
+
+.wrapper.section-fade-out {
+  opacity: 0.18;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto;
+  }
+
+  .wrapper {
+    transition: none;
+  }
+
+  .wrapper.section-fade-out {
+    opacity: 1;
+    filter: none;
+  }
 }
 
 .parallax {
