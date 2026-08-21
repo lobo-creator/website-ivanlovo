@@ -5,6 +5,7 @@ import { Contact, Experience, Hero, Navbar, Portfolio } from "./components";
 const App = () => {
   const wrapperRef = useRef(null);
   const fadeTimeoutRef = useRef(null);
+  const scrollAnimationRef = useRef(null);
   const [isFading, setIsFading] = useState(false);
 
   const getSectionTarget = (sectionId) =>
@@ -16,35 +17,52 @@ const App = () => {
     return Math.max(0, targetRect.top - wrapperRect.top + wrapper.scrollTop);
   };
 
+  const easeInOutCubic = (progress) =>
+    progress < 0.5
+      ? 4 * progress * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+  const animateScroll = (wrapper, targetTop, duration, onComplete) => {
+    const startTop = wrapper.scrollTop;
+    const distance = targetTop - startTop;
+    const startTime = performance.now();
+
+    window.cancelAnimationFrame(scrollAnimationRef.current);
+
+    const step = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      wrapper.scrollTop = startTop + distance * easeInOutCubic(progress);
+
+      if (progress < 1) {
+        scrollAnimationRef.current = window.requestAnimationFrame(step);
+        return;
+      }
+
+      wrapper.scrollTop = targetTop;
+      onComplete();
+    };
+
+    scrollAnimationRef.current = window.requestAnimationFrame(step);
+  };
+
   const scrollToSection = useCallback((sectionId) => {
     const wrapper = wrapperRef.current;
     const target = getSectionTarget(sectionId);
 
     if (!wrapper || !target) return;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const fadeDuration = reduceMotion ? 0 : 120;
-    const scrollDuration = reduceMotion ? 0 : 650;
+    const scrollDuration = 850;
     const targetTop = getSectionTop(wrapper, target);
 
     window.clearTimeout(fadeTimeoutRef.current);
     setIsFading(true);
     window.history.pushState(null, "", `#${sectionId}`);
 
-    window.setTimeout(() => {
-      wrapper.scrollTo({
-        top: targetTop,
-        behavior: reduceMotion ? "auto" : "smooth",
-      });
-
-      fadeTimeoutRef.current = window.setTimeout(() => {
-        wrapper.scrollTo({
-          top: targetTop,
-          behavior: "auto",
-        });
-        setIsFading(false);
-      }, scrollDuration);
-    }, fadeDuration);
+    animateScroll(wrapper, targetTop, scrollDuration, () => {
+      setIsFading(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -63,23 +81,29 @@ const App = () => {
     });
   }, []);
 
-  useEffect(() => () => window.clearTimeout(fadeTimeoutRef.current), []);
+  useEffect(
+    () => () => {
+      window.clearTimeout(fadeTimeoutRef.current);
+      window.cancelAnimationFrame(scrollAnimationRef.current);
+    },
+    []
+  );
 
   return (
     <BrowserRouter>
       <div className='relative z-0 bg-primary'>
         <Navbar onNavigate={scrollToSection} scrollContainer={wrapperRef} />
         <div className={`wrapper ${isFading ? "section-fade-out" : ""}`} ref={wrapperRef}>
-          <div id="hero" data-scroll-target="hero" className='z-10'>
+          <div data-scroll-target="hero" className='z-10'>
             <Hero scrollContainer={wrapperRef} />
           </div>
-          <div id="portfolio" data-scroll-target="portfolio" className='relative z-30 bg-primary mt-[-2px]'>
+          <div data-scroll-target="portfolio" className='relative z-30 bg-primary mt-[-2px]'>
             <Portfolio />
           </div>
-          <div id="experience" data-scroll-target="experience" className='relative z-30 bg-primary'>
+          <div data-scroll-target="experience" className='relative z-30 bg-primary'>
             <Experience />
           </div>
-          <div id="contact" data-scroll-target="contact" className='relative z-30 bg-primary'>
+          <div data-scroll-target="contact" className='relative z-30 bg-primary'>
             <Contact />
           </div>
         </div>

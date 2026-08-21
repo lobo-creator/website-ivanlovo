@@ -35,12 +35,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   perspective: 10px;
-  transition: opacity 180ms ease, filter 180ms ease;
+  transition: opacity 180ms ease;
+  will-change: opacity;
 }
 
 .wrapper.section-fade-out {
-  opacity: 0.18;
-  filter: blur(1px);
+  opacity: 0.65;
   pointer-events: none;
 }
 
@@ -55,7 +55,6 @@
 
   .wrapper.section-fade-out {
     opacity: 1;
-    filter: none;
   }
 }
 
