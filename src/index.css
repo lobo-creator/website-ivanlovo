@@ -2064,21 +2064,6 @@ body,
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.001ms !important;
-  }
-
-  .parallax > * {
-    animation: none !important;
-  }
-}
-
 @keyframes mulShdSpin {
   0%, 100% {
     box-shadow: 0em -2.6em 0em 0em #ffffff,
