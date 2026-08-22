@@ -2022,6 +2022,10 @@ body,
 }
 
 @media (max-width: 767px) {
+  .cyborgwolf-abduction-beam {
+    display: none;
+  }
+
   .cyborgwolf-canvas {
     filter:
       saturate(1.08)
@@ -2029,10 +2033,6 @@ body,
       contrast(1.14)
       hue-rotate(5deg)
       drop-shadow(0 0 18px rgba(147, 158, 255, 0.26));
-  }
-
-  .cyborgwolf-abduction-beam {
-    filter: brightness(1.18) saturate(1.08);
   }
 
   .cyborgwolf-abduction-beam::before,
