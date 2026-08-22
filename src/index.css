@@ -2045,6 +2045,10 @@ body,
       hue-rotate(2deg);
   }
 
+  .parallax__ground {
+    transform: translateX(calc((2000px - 100vw) / 2));
+  }
+
   .cyborgwolf-abduction-beam::before,
   .cyborgwolf-abduction-beam::after,
   .cyborgwolf-abduction-core,
