@@ -22,7 +22,7 @@ const Contact = () => {
 
   return (
     <div
-      className="md:m-12 md:px-48 flex flex-col sm:flex-row gap-10 overflow-hidden"
+      className="section-shell contact-shell flex flex-col sm:flex-row gap-10 overflow-hidden"
     >
       <motion.div
         initial="hidden"
@@ -42,39 +42,45 @@ const Contact = () => {
             },
           },
         }}
-        className='flex-[0.8] md:pb-40 mx-4 sm:mx-auto'
+        className='contact-panel'
       >
-        <h3 className={styles.sectionText}>Contact</h3>
+        <h3 className={`${styles.sectionText} section-heading`}>Contact</h3>
 
         <form
           action="https://getform.io/f/8b086558-47d4-49d0-852d-ec8c22da40f7"
           method="POST"
-          className="mt-12 gap-4 flex flex-col"
+          className="contact-form mt-12 gap-4 flex flex-col"
         >
-          <span className='text-white font-medium mt-3'>Full Name</span>
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter your full name"
-            className="bg-tertiary p-4 text-white border font-medium"
-          />
-          <span className='text-white font-medium mt-3'>Email Address</span>
-          <input
-            type="text"
-            name="email"
-            placeholder="Enter your email address"
-            className="bg-tertiary p-4 text-white border font-medium"
-          />
-          <span className='text-white font-medium mt-3'>Message</span>
-          <textarea
-            name="message"
-            placeholder="Tell me about your 3D print or CNC project"
-            rows="10"
-            className="bg-tertiary p-4 text-white border font-medium"
-          />
+          <label className="contact-field-group">
+            <span className='text-white font-medium'>Full Name</span>
+            <input
+              type="text"
+              name="name"
+              placeholder="Enter your full name"
+              className="contact-field p-4 text-white font-medium"
+            />
+          </label>
+          <label className="contact-field-group">
+            <span className='text-white font-medium'>Email Address</span>
+            <input
+              type="text"
+              name="email"
+              placeholder="Enter your email address"
+              className="contact-field p-4 text-white font-medium"
+            />
+          </label>
+          <label className="contact-field-group contact-field-group--wide">
+            <span className='text-white font-medium'>Message</span>
+            <textarea
+              name="message"
+              placeholder="Tell me about your 3D print or CNC project"
+              rows="10"
+              className="contact-field p-4 text-white font-medium"
+            />
+          </label>
           <button
             type='submit'
-            className='bg-tertiary py-3 px-8 w-fit text-white font-bold shadow-md shadow-primary '
+            className='contact-button py-3 px-8 w-fit text-white font-bold'
           >
             {loading ? "Sending..." : "Send"}
           </button>

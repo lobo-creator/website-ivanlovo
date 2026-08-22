@@ -1,97 +1,138 @@
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { experiences } from "../data";
 import { SectionWrapper } from "../hoc";
-import { styles } from "../styles";
 import { textVariant } from "../utils/motion";
 
-const ExperienceCard = ({ experience, onClick, isActive, isMobile }) => {
+const serviceThemes = [
+  {
+    "--service-bg": "linear-gradient(135deg, rgba(255, 43, 214, 0.28), rgba(19, 7, 52, 0.92))",
+    "--service-accent": "#ff2bd6",
+    "--service-accent-2": "#36f7ee",
+    "--service-glow": "rgba(255, 43, 214, 0.38)",
+  },
+  {
+    "--service-bg": "linear-gradient(135deg, rgba(54, 247, 238, 0.22), rgba(4, 35, 44, 0.94))",
+    "--service-accent": "#36f7ee",
+    "--service-accent-2": "#29ffa4",
+    "--service-glow": "rgba(54, 247, 238, 0.32)",
+  },
+  {
+    "--service-bg": "linear-gradient(135deg, rgba(255, 122, 24, 0.26), rgba(47, 19, 2, 0.94))",
+    "--service-accent": "#ff7a18",
+    "--service-accent-2": "#ff2bd6",
+    "--service-glow": "rgba(255, 122, 24, 0.34)",
+  },
+  {
+    "--service-bg": "linear-gradient(135deg, rgba(41, 255, 164, 0.22), rgba(5, 39, 31, 0.94))",
+    "--service-accent": "#29ffa4",
+    "--service-accent-2": "#36f7ee",
+    "--service-glow": "rgba(41, 255, 164, 0.3)",
+  },
+];
+
+const ExperienceCard = ({ experience, index, onClick, isActive }) => {
+  const theme = serviceThemes[index % serviceThemes.length];
+
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`cursor-pointer sm:mb-5 p-5 max-w-xl relative sm:text-left text-center ${
-        isMobile ? "text-quaternary" : ""
-      }`}
+      style={theme}
+      className={`service-card ${isActive ? "is-active" : ""}`}
+      aria-pressed={isActive}
     >
-      {(isActive || isMobile) && (
-        <div className="absolute left-0 top-0 bottom-0 w-3 md:w-5 bg-tertiary my-6 sm:block hidden"></div>
-      )}
-      <h3
-        className={`text-xl lg:text-2xl xl:text-3xl font-bold sm:pl-8 ${
-          isActive || isMobile ? "text-quaternary" : "text-slate-600"
-        }`}
-      >
-        {experience.title}
-      </h3>
-      <p
-        className={`text-md lg:text-lg xl:text-2xl sm:font-medium pt-2 sm:pl-8 ${
-          isActive || isMobile ? "text-white" : "text-slate-600"
-        }`}
-      >
-        {experience.company_name} | {experience.date}
-      </p>
-    </div>
+      <span className={`service-card__icon service-card__icon--${experience.icon}`} aria-hidden="true" />
+      <span className="service-card__content">
+        <span className="service-card__title">{experience.title}</span>
+        <span className="service-card__meta">{experience.company_name}</span>
+      </span>
+      <span className="service-card__arrow" aria-hidden="true" />
+    </button>
   );
 };
 
-const ExperienceDetails = ({ experience }) => {
+const ExperienceDetails = ({ experience, theme }) => {
   return (
-    <div className="mt-5">
-      <ul className="max-w-7xl list-none space-y-8 border-4 lg:border-8 rounded-xl lg:rounded-3xl p-6">
-        {experience.details.map((detail, index) => (
-          <li
-            key={`experience-detail-${index}`}
-            className="text-slate-500 font-semibold text-[10px] xs:text-[14px] md:text-[18px] lg:text-[22px] xl:text-[28px] lg:leading-[30px]"
-            dangerouslySetInnerHTML={{ __html: detail }}
-          />
-        ))}
-      </ul>
-    </div>
+    <motion.article
+      key={experience.title}
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="service-detail-panel"
+      style={theme}
+    >
+      <div className="service-detail__copy">
+        <p className="service-detail__eyebrow">/// {experience.label} ///</p>
+        <h3>{experience.headline}</h3>
+        <span className="service-detail__rule" aria-hidden="true" />
+        <p className="service-detail__summary">{experience.summary}</p>
+
+        <ul className="service-detail__features">
+          {experience.highlights.map((highlight, index) => (
+            <li key={`${experience.title}-highlight-${index}`}>
+              <span className="service-detail__feature-icon" aria-hidden="true" />
+              <span>
+                <strong>{highlight.title}</strong>
+                <span>{highlight.body}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="service-detail__visual" aria-hidden="true">
+        <img src={experience.visual} alt={experience.visualAlt} />
+        <span className="service-detail__scanline" />
+        <span className="service-detail__annotation service-detail__annotation--top">
+          {experience.annotationTop}
+        </span>
+        <span className="service-detail__annotation service-detail__annotation--bottom">
+          {experience.annotationBottom}
+        </span>
+      </div>
+    </motion.article>
   );
 };
 
 const Experience = () => {
-  const [selectedJob, setSelectedJob] = useState(experiences[0]);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-
-    handleResize(); // Check initial screen size
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const selectedService = experiences[selectedIndex];
+  const selectedTheme = serviceThemes[selectedIndex % serviceThemes.length];
 
   return (
-    <div className="sm:my-20">
-      <motion.div variants={textVariant()}>
-        <h2 className={`${styles.sectionText} text-center`}>
+    <div className="section-shell services-shell">
+      <motion.div className="services-shell__heading" variants={textVariant()}>
+        <p className="services-eyebrow">
+          <span aria-hidden="true" />
           Services
+          <span aria-hidden="true" />
+        </p>
+        <h2 className="services-title">
+          Design. <span className="services-title__model">Model.</span>{" "}
+          <span className="services-title__fabricate">Fabricate.</span>
         </h2>
+        <p className="services-subtitle">
+          End-to-end solutions from concept to precision.
+        </p>
       </motion.div>
 
-      <div className="relative mt-10 md:mt-20 md:p-20 flex flex-col items-center sm:flex-row sm:items-start">
-        <div className="flex flex-col z-10 sm:w-auto sm:w-full">
+      <div className="services-layout">
+        <div className="service-list" role="list" aria-label="Services">
           {experiences.map((experience, index) => (
-            <ExperienceCard
-              key={`experience-${index}`}
-              experience={experience}
-              onClick={() => setSelectedJob(experience)}
-              isActive={selectedJob === experience}
-              isMobile={isMobile}
-            />
+            <div key={`experience-${index}`} role="listitem">
+              <ExperienceCard
+                experience={experience}
+                index={index}
+                onClick={() => setSelectedIndex(index)}
+                isActive={selectedIndex === index}
+              />
+            </div>
           ))}
         </div>
 
-        <div className="flex justify-end z-10 sm:block hidden">
-          <ExperienceDetails experience={selectedJob} />
-        </div>
+        <ExperienceDetails experience={selectedService} theme={selectedTheme} />
       </div>
     </div>
   );

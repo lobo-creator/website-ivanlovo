@@ -9,10 +9,10 @@ const LEFT_FACING_ROTATION_Y = 3 + Math.PI;
 
 const toonGradient = new THREE.DataTexture(
   new Uint8Array([
-    22, 26, 36, 255,
-    68, 96, 122, 255,
-    157, 198, 216, 255,
-    245, 232, 198, 255,
+    16, 18, 36, 255,
+    58, 72, 144, 255,
+    146, 178, 238, 255,
+    236, 246, 255, 255,
   ]),
   4,
   1,
@@ -23,14 +23,18 @@ toonGradient.minFilter = THREE.NearestFilter;
 toonGradient.generateMipmaps = false;
 toonGradient.needsUpdate = true;
 
+const nightTint = new THREE.Color("#7569dc");
+
 const getToonColor = (material) => {
   const color = material?.color?.clone() ?? new THREE.Color("#6fb8d4");
+  color.lerp(nightTint, 0.13);
+
   const hsl = {};
   color.getHSL(hsl);
   color.setHSL(
     hsl.h,
-    hsl.s < 0.08 ? hsl.s : Math.min(1, hsl.s * 1.35 + 0.14),
-    THREE.MathUtils.clamp(hsl.l * 0.68, 0.16, 0.54)
+    hsl.s < 0.08 ? hsl.s : THREE.MathUtils.clamp(hsl.s * 1.04 + 0.03, 0.16, 0.82),
+    THREE.MathUtils.clamp(hsl.l * 0.9, 0.22, 0.64)
   );
   return color;
 };
@@ -109,7 +113,7 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
   const [rotationX, setRotationX] = useState(0);
   const [rotationY, setRotationY] = useState(0);
   const [scale, setScale] = useState([2, 2, 2]);
-  const [position, setPosition] = useState([0.2, -1.2, 0]);
+  const [position, setPosition] = useState([0.2, -2.15, 0]);
 
   useEffect(() => {
     const container = scrollContainer.current;
@@ -126,19 +130,19 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
         setScale([1, 1, 1]);
-        setPosition([0.2, -0.4, 0]);
+        setPosition([0.2, -0.85, 0]);
       } else if (window.innerWidth < 1024) {
         setScale([1.33, 1.33, 1.33]);
-        setPosition([0.2, -0.6, 0]);
+        setPosition([0.2, -1.15, 0]);
       } else if (window.innerWidth < 1280) {
         setScale([1.5, 1.5, 1.5]);
-        setPosition([0.2, -0.7, 0]);
+        setPosition([0.2, -1.45, 0]);
       } else if (window.innerWidth < 1536) {
         setScale([1.66, 1.66, 1.66]);
-        setPosition([0.2, -1.1, 0]);
+        setPosition([0.2, -1.95, 0]);
       } else {
         setScale([2, 2, 2]);
-        setPosition([0.2, -1.2, 0]);
+        setPosition([0.2, -2.15, 0]);
       }
     };
 
@@ -155,7 +159,7 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
 
   return (
     <Canvas
-      className={`w-full h-screen bg-transparent z-10`}
+      className="cyborgwolf-canvas w-full h-screen bg-transparent z-10"
       camera={{ near: 0.1, far: 1000 }}
       flat
       gl={{ antialias: true, alpha: true }}
@@ -165,11 +169,11 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
       }}
     >
       <Suspense fallback={<CanvasLoader />}>
-        <directionalLight position={[2, 3, 2]} intensity={1.15} />
-        <ambientLight intensity={0.22} />
-        <pointLight position={[10, 5, 10]} intensity={0.35} />
-        <spotLight position={[0, 50, 10]} angle={0.18} penumbra={0.85} intensity={0.5} />
-        <hemisphereLight skyColor="#5ad7ff" groundColor="#07111f" intensity={0.3} />
+        <directionalLight color="#f4fbff" position={[-2, 5, 4]} intensity={1.5} />
+        <ambientLight color="#352f74" intensity={0.54} />
+        <pointLight color="#aeb7ff" position={[1.2, 2.5, 5]} intensity={0.38} />
+        <spotLight color="#f7e8ff" position={[0, 12, 5]} angle={0.34} penumbra={0.68} intensity={0.76} />
+        <hemisphereLight skyColor="#e0ebff" groundColor="#16082e" intensity={0.62} />
 
         <CyborgWolf rotationX={rotationX} rotationY={rotationY} scale={scale} position={position} />
       </Suspense>

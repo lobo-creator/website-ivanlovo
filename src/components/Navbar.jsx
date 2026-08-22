@@ -2,6 +2,25 @@ import React, { useEffect, useState } from "react";
 import { close, menu } from "../assets";
 import { navLinks } from "../data";
 
+const navThemes = {
+  hero: {
+    "--nav-accent": "#3feaff",
+    "--nav-glow": "rgba(63, 234, 255, 0.42)",
+  },
+  portfolio: {
+    "--nav-accent": "#ff2bd6",
+    "--nav-glow": "rgba(255, 43, 214, 0.42)",
+  },
+  experience: {
+    "--nav-accent": "#29ffa4",
+    "--nav-glow": "rgba(41, 255, 164, 0.38)",
+  },
+  contact: {
+    "--nav-accent": "#ff7a18",
+    "--nav-glow": "rgba(255, 122, 24, 0.42)",
+  },
+};
+
 const Navbar = ({ onNavigate, scrollContainer }) => {
   const [active, setActive] = useState("hero");
   const [toggle, setToggle] = useState(false);
@@ -54,29 +73,32 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
 
   return (
     <nav
+      style={navThemes[active] ?? navThemes.hero}
       className="w-full flex items-center bg-gradient-to-b from-black sm:bg-none p-8 sm:px-16 sm:py-10 fixed z-40 pointer-events-none"
     >
       <div className='w-full flex justify-between items-start mx-auto'>
         <button
           type="button"
-          className='flex items-start pointer-events-auto'
+          className='navbar-logo flex items-start pointer-events-auto'
           onClick={handleNavClick("hero")}
         >
-          <p className='text-white text-[26px] lg:text-[36px] font-bold pointer-events-auto cursor-pointer flex'>
+          <p className='text-[26px] lg:text-[36px] font-bold pointer-events-auto cursor-pointer flex'>
             IL
           </p>
         </button>
 
         <ul className='list-none hidden sm:flex flex-col gap-5'>
-          {navLinks.map((nav) => (
+          {navLinks.map((nav) => {
+            const theme = navThemes[nav.id] ?? navThemes.hero;
+
+            return (
             <li
               key={nav.id}
-              className={`relative flex items-center ${
-                active === nav.id ? "text-white" : "text-slate-500"
-              } hover:text-white text-[18px] lg:text-[24px] font-bold pointer-events-auto cursor-pointer`}
+              style={theme}
+              className={`nav-link relative flex items-center ${active === nav.id ? "is-active" : ""} text-[18px] lg:text-[24px] font-bold pointer-events-auto cursor-pointer`}
             >
               {active === nav.id && (
-                <div className="fixed right-10 w-2 h-6 lg:h-8 bg-quaternary"></div>
+                <div className="nav-link__indicator"></div>
               )}
               <button
                 type="button"
@@ -86,7 +108,8 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
                 {nav.title}
               </button>
             </li>
-          ))}
+            );
+          })}
         </ul>
 
         <div className='sm:hidden flex flex-1 justify-end items-center'>
@@ -100,14 +123,18 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
           <div
             className={`${
               !toggle ? "hidden" : "flex"
-            } p-6 absolute top-20 right-0 mx-4 my-2 min-w-[140px] z-30 rounded-xl`}
+            } nav-mobile-menu p-6 absolute top-20 right-0 mx-4 my-2 min-w-[140px] z-30`}
           >
             <ul className='list-none flex justify-end items-start flex-1 flex-col gap-4'>
-              {navLinks.map((nav) => (
+              {navLinks.map((nav) => {
+                const theme = navThemes[nav.id] ?? navThemes.hero;
+
+                return (
                 <li
                   key={nav.id}
-                  className={`font-poppins font-medium cursor-pointer text-[16px] ${
-                    active === nav.id ? "text-quaternary" : "text-secondary"
+                  style={theme}
+                  className={`nav-link font-poppins font-medium cursor-pointer text-[16px] ${
+                    active === nav.id ? "is-active" : ""
                   }`}
                 >
                   <button
@@ -118,7 +145,8 @@ const Navbar = ({ onNavigate, scrollContainer }) => {
                     {nav.title}
                   </button>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
         </div>

@@ -13,18 +13,24 @@ const Hero = ({ scrollContainer }) => {
         </div>
         <div className="flex-1 flex justify-start lg:justify-end mt-4 sm:mt-14 ml-8 xs:ml-[-4vh] sm:ml-[-17vh] md:ml-[-26vh] lg:mt-10 2xl:mt-0">
           <div className='font-bold text-[20px] sm:text-[30px] md:text-[36px] 2xl:text-[46px] sm:leading-[40px] md:leading-[50px] 2xl:leading-[60px] streaky-glow max-w-sm 2xl:max-w-lg text-white text-left'>
-            I design production-ready <br/> 3D models for print and CNC.
+            I create <br/>3D models for video games, 3D printing, and CNC machining.
           </div>
         </div>
       </div>
 
-      <img className="parallax__stars" src="./parallax/1Stars.svg" alt="" />
-      <img className="parallax__planets" src="./parallax/2Planets.svg" alt="" />
-      <img className="parallax__mountain1" src="./parallax/3Mountain.svg" alt="" />
-      <img className="parallax__mountain2" src="./parallax/4Mountain.svg" alt="" />
-      <img className="parallax__crater" src="./parallax/5Crater.svg" alt="" />
-      <img className="parallax__sun" src="./parallax/6Sun.svg" alt="" />
+      <img className="parallax__stars" src="./parallax/1Stars.png" alt="" />
+      <img className="parallax__planets" src="./parallax/2Moon.png" alt="" />
+      <img className="parallax__mountain1" src="./parallax/3Mountains.png" alt="" />
+      <img className="parallax__trees1" src="./parallax/4Trees1.png" alt="" />
+      <img className="parallax__trees2" src="./parallax/4Trees2.png" alt="" />
+      <img className="parallax__crater" src="./parallax/5Trees.png" alt="" />
+      <img className="parallax__ground" src="./parallax/6Ground.png" alt="" />
 
+      <div className="cyborgwolf-abduction-beam" aria-hidden="true">
+        <span className="cyborgwolf-abduction-core" />
+        <span className="cyborgwolf-abduction-dust" />
+        <span className="cyborgwolf-abduction-mist" />
+      </div>
       <CyborgWolfCanvas scrollContainer={scrollContainer} />
     </section>
   );
