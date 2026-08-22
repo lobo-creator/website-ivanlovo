@@ -63,7 +63,7 @@ const ProjectImageCarousel = ({ slides, activeSlide, onManualSlideChange }) => {
             src={item.src}
             alt={item.alt}
             decoding="async"
-            loading="eager"
+            loading="lazy"
             className="portfolio-carousel__image"
           />
         ))}

@@ -11,9 +11,23 @@ const heroAssets = [
   "/parallax/6Ground.png",
 ];
 
+const mobileHeroAssets = [
+  "/parallax/mobile/1Stars.webp",
+  "/parallax/mobile/2Moon.webp",
+  "/parallax/mobile/3Mountains.webp",
+  "/parallax/mobile/4Trees1.webp",
+  "/parallax/mobile/4Trees2.webp",
+  "/parallax/mobile/5Trees.webp",
+  "/parallax/mobile/6Ground.webp",
+];
+
 const imagePattern = /\.(avif|gif|jpe?g|png|svg|webp)(\?.*)?$/i;
 
 const unique = (items) => [...new Set(items.filter(Boolean))];
+
+const isMobileViewport = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(max-width: 767px)").matches;
 
 const withTimeout = (promise, timeout = 18000) =>
   Promise.race([
@@ -49,16 +63,38 @@ const loadResource = (src) => {
     .catch(() => false);
 };
 
-const getSiteAssets = () => {
+const getNonHeroAssets = () => {
   const workAssets = portfolio.flatMap((project) =>
     project.slides?.map((slide) => slide.src) ?? []
   );
   const serviceAssets = experiences.map((experience) => experience.visual);
 
-  return unique([...heroAssets, ...workAssets, ...serviceAssets, cyborgWolfScene]);
+  return unique([...workAssets, ...serviceAssets]);
+};
+
+const warmDeferredAssets = (assets) => {
+  const load = () => {
+    assets.forEach((asset) => {
+      loadResource(asset);
+    });
+  };
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(load, { timeout: 3500 });
+    return;
+  }
+
+  window.setTimeout(load, 900);
+};
+
+const getCriticalAssets = () => {
+  if (isMobileViewport()) return unique([...mobileHeroAssets, cyborgWolfScene]);
+
+  return unique([...heroAssets, ...getNonHeroAssets(), cyborgWolfScene]);
 };
 
 export const waitForWindowLoad = () => {
+  if (isMobileViewport()) return Promise.resolve(true);
   if (document.readyState === "complete") return Promise.resolve(true);
 
   return new Promise((resolve) => {
@@ -73,7 +109,7 @@ export const waitForFonts = () => {
 };
 
 export const preloadSiteAssets = async ({ onProgress } = {}) => {
-  const assets = getSiteAssets();
+  const assets = getCriticalAssets();
   let completed = 0;
 
   onProgress?.(0);
@@ -88,4 +124,8 @@ export const preloadSiteAssets = async ({ onProgress } = {}) => {
   );
 
   onProgress?.(100);
+
+  if (isMobileViewport()) {
+    warmDeferredAssets(unique([...heroAssets, ...getNonHeroAssets()]));
+  }
 };

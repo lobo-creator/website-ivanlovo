@@ -68,16 +68,17 @@ const createToonMaterial = (material) => {
 
 const getRendererConfig = () => {
   if (typeof window === "undefined") {
-    return { antialias: true, dpr: [1, 1.5] };
+    return { antialias: true, dpr: [1, 1.5], isMobile: false };
   }
 
   const width = window.innerWidth;
   const isMobile = width < 768;
-  const maxDpr = isMobile ? 1.12 : width < 1280 ? 1.35 : 1.65;
+  const maxDpr = isMobile ? 1 : width < 1280 ? 1.35 : 1.65;
 
   return {
     antialias: !isMobile,
     dpr: [1, Math.min(window.devicePixelRatio || 1, maxDpr)],
+    isMobile,
   };
 };
 
@@ -248,11 +249,23 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
       }}
     >
       <Suspense fallback={<CanvasLoader />}>
-        <directionalLight color="#f4fbff" position={[-2, 5, 4]} intensity={1.5} />
-        <ambientLight color="#352f74" intensity={0.54} />
-        <pointLight color="#aeb7ff" position={[1.2, 2.5, 5]} intensity={0.38} />
-        <spotLight color="#f7e8ff" position={[0, 12, 5]} angle={0.34} penumbra={0.68} intensity={0.76} />
-        <hemisphereLight skyColor="#e0ebff" groundColor="#16082e" intensity={0.62} />
+        <directionalLight
+          color="#f4fbff"
+          position={[-2, 5, 4]}
+          intensity={rendererConfig.isMobile ? 1.38 : 1.5}
+        />
+        <ambientLight color="#352f74" intensity={rendererConfig.isMobile ? 0.62 : 0.54} />
+        {!rendererConfig.isMobile && (
+          <>
+            <pointLight color="#aeb7ff" position={[1.2, 2.5, 5]} intensity={0.38} />
+            <spotLight color="#f7e8ff" position={[0, 12, 5]} angle={0.34} penumbra={0.68} intensity={0.76} />
+          </>
+        )}
+        <hemisphereLight
+          skyColor="#e0ebff"
+          groundColor="#16082e"
+          intensity={rendererConfig.isMobile ? 0.5 : 0.62}
+        />
 
         <CyborgWolf
           rotationRef={rotationRef}

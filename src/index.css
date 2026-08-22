@@ -254,8 +254,18 @@ body,
   animation-timeline: scroll();
 }
 
-.parallax > img {
+.parallax > img,
+.parallax > picture,
+.parallax > picture > img {
   width: 100%;
+}
+
+.parallax > picture {
+  display: block;
+}
+
+.parallax > picture > img {
+  display: block;
 }
 
 .cyborgwolf-canvas {
@@ -2025,6 +2035,14 @@ body,
     filter: brightness(1.18) saturate(1.08);
   }
 
+  .cyborgwolf-abduction-beam::before,
+  .cyborgwolf-abduction-beam::after,
+  .cyborgwolf-abduction-core,
+  .cyborgwolf-abduction-dust,
+  .cyborgwolf-abduction-mist {
+    animation: none;
+  }
+
   .cyborgwolf-abduction-beam::before {
     filter: blur(24px);
   }
@@ -2039,6 +2057,14 @@ body,
   }
 
   .cyborgwolf-abduction-dust {
+    background-image:
+      radial-gradient(circle at 50% 9%, rgba(255, 255, 255, 0.92) 0 1.5px, transparent 3px),
+      radial-gradient(circle at 58% 20%, rgba(118, 248, 255, 0.72) 0 1.4px, transparent 2.8px),
+      radial-gradient(circle at 42% 32%, rgba(255, 142, 245, 0.58) 0 1.2px, transparent 2.5px),
+      radial-gradient(circle at 61% 46%, rgba(255, 255, 255, 0.78) 0 1.5px, transparent 3px),
+      radial-gradient(circle at 39% 58%, rgba(122, 245, 255, 0.62) 0 1.5px, transparent 3px),
+      radial-gradient(circle at 68% 70%, rgba(211, 188, 255, 0.54) 0 1.5px, transparent 3px),
+      radial-gradient(circle at 48% 84%, rgba(255, 255, 255, 0.66) 0 1.5px, transparent 3px);
     filter:
       blur(0)
       brightness(2.15)
@@ -2049,8 +2075,7 @@ body,
   }
 
   .cyborgwolf-abduction-mist {
-    filter: blur(14px);
-    opacity: 0.72;
+    display: none;
   }
 
   .portfolio-card__media,

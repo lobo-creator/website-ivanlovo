@@ -1,6 +1,13 @@
 import { CyborgWolfCanvas } from ".";
 import Position from "./Position";
 
+const ParallaxLayer = ({ className, src, mobileSrc }) => (
+  <picture className={className}>
+    <source srcSet={mobileSrc} media="(max-width: 767px)" type="image/webp" />
+    <img src={src} alt="" decoding="async" fetchpriority="high" loading="eager" />
+  </picture>
+);
+
 const Hero = ({ scrollContainer }) => {
   return (
     <section className="parallax">
@@ -18,13 +25,13 @@ const Hero = ({ scrollContainer }) => {
         </div>
       </div>
 
-      <img className="parallax__stars" src="./parallax/1Stars.png" alt="" decoding="async" fetchpriority="high" />
-      <img className="parallax__planets" src="./parallax/2Moon.png" alt="" decoding="async" fetchpriority="high" />
-      <img className="parallax__mountain1" src="./parallax/3Mountains.png" alt="" decoding="async" fetchpriority="high" />
-      <img className="parallax__trees1" src="./parallax/4Trees1.png" alt="" decoding="async" fetchpriority="high" />
-      <img className="parallax__trees2" src="./parallax/4Trees2.png" alt="" decoding="async" fetchpriority="high" />
-      <img className="parallax__crater" src="./parallax/5Trees.png" alt="" decoding="async" fetchpriority="high" />
-      <img className="parallax__ground" src="./parallax/6Ground.png" alt="" decoding="async" fetchpriority="high" />
+      <ParallaxLayer className="parallax__stars" src="./parallax/1Stars.png" mobileSrc="/parallax/mobile/1Stars.webp" />
+      <ParallaxLayer className="parallax__planets" src="./parallax/2Moon.png" mobileSrc="/parallax/mobile/2Moon.webp" />
+      <ParallaxLayer className="parallax__mountain1" src="./parallax/3Mountains.png" mobileSrc="/parallax/mobile/3Mountains.webp" />
+      <ParallaxLayer className="parallax__trees1" src="./parallax/4Trees1.png" mobileSrc="/parallax/mobile/4Trees1.webp" />
+      <ParallaxLayer className="parallax__trees2" src="./parallax/4Trees2.png" mobileSrc="/parallax/mobile/4Trees2.webp" />
+      <ParallaxLayer className="parallax__crater" src="./parallax/5Trees.png" mobileSrc="/parallax/mobile/5Trees.webp" />
+      <ParallaxLayer className="parallax__ground" src="./parallax/6Ground.png" mobileSrc="/parallax/mobile/6Ground.webp" />
 
       <div className="cyborgwolf-abduction-beam" aria-hidden="true">
         <span className="cyborgwolf-abduction-core" />
