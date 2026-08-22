@@ -24,21 +24,6 @@ const navThemes = {
 const Navbar = ({ onNavigate, scrollContainer }) => {
   const [active, setActive] = useState("hero");
   const [toggle, setToggle] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const container = scrollContainer?.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const scrollTop = container.scrollTop;
-      setScrolled(scrollTop > 100);
-    };
-
-    handleScroll();
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [scrollContainer]);
 
   useEffect(() => {
     const sections = document.querySelectorAll("[data-scroll-target]");

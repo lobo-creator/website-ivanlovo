@@ -18,13 +18,13 @@ const Hero = ({ scrollContainer }) => {
         </div>
       </div>
 
-      <img className="parallax__stars" src="./parallax/1Stars.png" alt="" />
-      <img className="parallax__planets" src="./parallax/2Moon.png" alt="" />
-      <img className="parallax__mountain1" src="./parallax/3Mountains.png" alt="" />
-      <img className="parallax__trees1" src="./parallax/4Trees1.png" alt="" />
-      <img className="parallax__trees2" src="./parallax/4Trees2.png" alt="" />
-      <img className="parallax__crater" src="./parallax/5Trees.png" alt="" />
-      <img className="parallax__ground" src="./parallax/6Ground.png" alt="" />
+      <img className="parallax__stars" src="./parallax/1Stars.png" alt="" decoding="async" fetchpriority="high" />
+      <img className="parallax__planets" src="./parallax/2Moon.png" alt="" decoding="async" fetchpriority="high" />
+      <img className="parallax__mountain1" src="./parallax/3Mountains.png" alt="" decoding="async" fetchpriority="high" />
+      <img className="parallax__trees1" src="./parallax/4Trees1.png" alt="" decoding="async" fetchpriority="high" />
+      <img className="parallax__trees2" src="./parallax/4Trees2.png" alt="" decoding="async" fetchpriority="high" />
+      <img className="parallax__crater" src="./parallax/5Trees.png" alt="" decoding="async" fetchpriority="high" />
+      <img className="parallax__ground" src="./parallax/6Ground.png" alt="" decoding="async" fetchpriority="high" />
 
       <div className="cyborgwolf-abduction-beam" aria-hidden="true">
         <span className="cyborgwolf-abduction-core" />

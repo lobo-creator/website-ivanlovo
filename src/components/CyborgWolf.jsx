@@ -1,5 +1,5 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import cyborgWolfScene from "../assets/3d/cyborgwolf.glb";
@@ -66,7 +66,64 @@ const createToonMaterial = (material) => {
   return toonMaterial;
 };
 
-const CyborgWolf = ({ rotationX, rotationY, scale, position }) => {
+const getRendererConfig = () => {
+  if (typeof window === "undefined") {
+    return { antialias: true, dpr: [1, 1.5] };
+  }
+
+  const width = window.innerWidth;
+  const isMobile = width < 768;
+  const maxDpr = isMobile ? 1.12 : width < 1280 ? 1.35 : 1.65;
+
+  return {
+    antialias: !isMobile,
+    dpr: [1, Math.min(window.devicePixelRatio || 1, maxDpr)],
+  };
+};
+
+const getModelLayout = () => {
+  if (typeof window === "undefined") {
+    return {
+      scale: [2, 2, 2],
+      position: [0.2, -2.15, 0],
+    };
+  }
+
+  if (window.innerWidth < 768) {
+    return {
+      scale: [1, 1, 1],
+      position: [0.2, -0.85, 0],
+    };
+  }
+
+  if (window.innerWidth < 1024) {
+    return {
+      scale: [1.33, 1.33, 1.33],
+      position: [0.2, -1.15, 0],
+    };
+  }
+
+  if (window.innerWidth < 1280) {
+    return {
+      scale: [1.5, 1.5, 1.5],
+      position: [0.2, -1.45, 0],
+    };
+  }
+
+  if (window.innerWidth < 1536) {
+    return {
+      scale: [1.66, 1.66, 1.66],
+      position: [0.2, -1.95, 0],
+    };
+  }
+
+  return {
+    scale: [2, 2, 2],
+    position: [0.2, -2.15, 0],
+  };
+};
+
+const CyborgWolf = ({ rotationRef, scale, position, reduceMotion }) => {
   const cyborgWolfRef = useRef();
   const { scene, animations } = useGLTF(cyborgWolfScene);
   const { actions } = useAnimations(animations, cyborgWolfRef);
@@ -75,12 +132,17 @@ const CyborgWolf = ({ rotationX, rotationY, scale, position }) => {
     const action = actions["Animation"];
     if (!action) return;
 
+    if (reduceMotion) {
+      action.stop();
+      return undefined;
+    }
+
     action.reset().fadeIn(0.3).play();
 
     return () => {
       action.fadeOut(0.3);
     };
-  }, [actions]);
+  }, [actions, reduceMotion]);
 
   useEffect(() => {
     scene.traverse((child) => {
@@ -88,6 +150,7 @@ const CyborgWolf = ({ rotationX, rotationY, scale, position }) => {
 
       child.castShadow = true;
       child.receiveShadow = true;
+      child.frustumCulled = true;
 
       if (Array.isArray(child.material)) {
         child.material = child.material.map(createToonMaterial);
@@ -97,75 +160,110 @@ const CyborgWolf = ({ rotationX, rotationY, scale, position }) => {
     });
   }, [scene]);
 
+  useFrame((_, delta) => {
+    if (!cyborgWolfRef.current) return;
+
+    const targetRotationX = (rotationRef.current?.x ?? 0) + 0.5;
+    const targetRotationY = LEFT_FACING_ROTATION_Y + (rotationRef.current?.y ?? 0);
+    const damping = reduceMotion ? 1 : Math.min(1, delta * 8);
+
+    cyborgWolfRef.current.rotation.x = THREE.MathUtils.lerp(
+      cyborgWolfRef.current.rotation.x,
+      targetRotationX,
+      damping
+    );
+    cyborgWolfRef.current.rotation.y = THREE.MathUtils.lerp(
+      cyborgWolfRef.current.rotation.y,
+      targetRotationY,
+      damping
+    );
+  });
+
   return (
-    <mesh
+    <group
       ref={cyborgWolfRef}
       position={position}
       scale={scale}
-      rotation={[rotationX + 0.5, LEFT_FACING_ROTATION_Y + rotationY, 0]}
+      rotation={[0.5, LEFT_FACING_ROTATION_Y, 0]}
     >
       <primitive object={scene} />
-    </mesh>
+    </group>
   );
 };
 
 const CyborgWolfCanvas = ({ scrollContainer }) => {
-  const [rotationX, setRotationX] = useState(0);
-  const [rotationY, setRotationY] = useState(0);
-  const [scale, setScale] = useState([2, 2, 2]);
-  const [position, setPosition] = useState([0.2, -2.15, 0]);
+  const rotationRef = useRef({ x: 0, y: 0 });
+  const [modelLayout, setModelLayout] = useState(getModelLayout);
+  const [rendererConfig, setRendererConfig] = useState(getRendererConfig);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handleMotionPreference = () => setReduceMotion(mediaQuery.matches);
+
+    handleMotionPreference();
+    mediaQuery.addEventListener("change", handleMotionPreference);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleMotionPreference);
+    };
+  }, []);
 
   useEffect(() => {
     const container = scrollContainer.current;
     if (!container) return;
 
-    const handleScroll = () => {
+    let scrollFrame = 0;
+
+    const updateRotation = () => {
+      scrollFrame = 0;
       const scrollTop = container.scrollTop;
-      const rotationXValue = scrollTop * -0.0016;
-      const rotationYValue = scrollTop * -0.003;
-      setRotationX(rotationXValue);
-      setRotationY(rotationYValue);
+      const motionMultiplier = reduceMotion ? 0 : 1;
+
+      rotationRef.current.x = scrollTop * -0.0016 * motionMultiplier;
+      rotationRef.current.y = scrollTop * -0.003 * motionMultiplier;
+    };
+
+    const handleScroll = () => {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(updateRotation);
     };
 
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setScale([1, 1, 1]);
-        setPosition([0.2, -0.85, 0]);
-      } else if (window.innerWidth < 1024) {
-        setScale([1.33, 1.33, 1.33]);
-        setPosition([0.2, -1.15, 0]);
-      } else if (window.innerWidth < 1280) {
-        setScale([1.5, 1.5, 1.5]);
-        setPosition([0.2, -1.45, 0]);
-      } else if (window.innerWidth < 1536) {
-        setScale([1.66, 1.66, 1.66]);
-        setPosition([0.2, -1.95, 0]);
-      } else {
-        setScale([2, 2, 2]);
-        setPosition([0.2, -2.15, 0]);
-      }
+      setModelLayout(getModelLayout());
+      setRendererConfig(getRendererConfig());
     };
 
     handleResize();
     handleScroll();
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize);
 
     return () => {
+      window.cancelAnimationFrame(scrollFrame);
       container.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
-  }, [scrollContainer]);
+  }, [reduceMotion, scrollContainer]);
 
   return (
     <Canvas
       className="cyborgwolf-canvas w-full h-screen bg-transparent z-10"
       camera={{ near: 0.1, far: 1000 }}
+      dpr={rendererConfig.dpr}
       flat
-      gl={{ antialias: true, alpha: true }}
+      gl={{
+        antialias: rendererConfig.antialias,
+        alpha: true,
+        depth: true,
+        powerPreference: "high-performance",
+        preserveDrawingBuffer: false,
+        stencil: false,
+      }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.NoToneMapping;
         gl.outputEncoding = THREE.sRGBEncoding;
+        gl.setClearAlpha(0);
       }}
     >
       <Suspense fallback={<CanvasLoader />}>
@@ -175,10 +273,17 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
         <spotLight color="#f7e8ff" position={[0, 12, 5]} angle={0.34} penumbra={0.68} intensity={0.76} />
         <hemisphereLight skyColor="#e0ebff" groundColor="#16082e" intensity={0.62} />
 
-        <CyborgWolf rotationX={rotationX} rotationY={rotationY} scale={scale} position={position} />
+        <CyborgWolf
+          rotationRef={rotationRef}
+          scale={modelLayout.scale}
+          position={modelLayout.position}
+          reduceMotion={reduceMotion}
+        />
       </Suspense>
     </Canvas>
   );
 };
+
+useGLTF.preload(cyborgWolfScene);
 
 export default CyborgWolfCanvas;

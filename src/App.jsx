@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { BrowserRouter } from "react-router-dom";
-import { Contact, Experience, Hero, Navbar, Portfolio } from "./components";
+import { Contact, Experience, Hero, Navbar, Portfolio, SiteLoader } from "./components";
+import { preloadSiteAssets, waitForFonts, waitForWindowLoad } from "./utils/preloadAssets";
 
 const App = () => {
   const wrapperRef = useRef(null);
   const fadeTimeoutRef = useRef(null);
   const scrollAnimationRef = useRef(null);
+  const [loaderProgress, setLoaderProgress] = useState(0);
+  const [isSiteReady, setIsSiteReady] = useState(false);
   const [isFading, setIsFading] = useState(false);
 
   const getSectionTarget = (sectionId) =>
@@ -51,7 +54,7 @@ const App = () => {
     const wrapper = wrapperRef.current;
     const target = getSectionTarget(sectionId);
 
-    if (!wrapper || !target) return;
+    if (!wrapper || !target || !isSiteReady) return;
 
     const scrollDuration = 850;
     const targetTop = getSectionTop(wrapper, target);
@@ -63,6 +66,34 @@ const App = () => {
     animateScroll(wrapper, targetTop, scrollDuration, () => {
       setIsFading(false);
     });
+  }, [isSiteReady]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const minLoaderTime = new Promise((resolve) => {
+      window.setTimeout(resolve, 750);
+    });
+
+    Promise.all([
+      preloadSiteAssets({
+        onProgress: (progress) => {
+          if (isMounted) setLoaderProgress(progress);
+        },
+      }),
+      waitForFonts(),
+      waitForWindowLoad(),
+      minLoaderTime,
+    ]).then(() => {
+      if (!isMounted) return;
+
+      setLoaderProgress(100);
+      window.requestAnimationFrame(() => setIsSiteReady(true));
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -91,9 +122,14 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className='relative z-0 bg-primary'>
+      <div className={`site-shell relative z-0 bg-primary ${isSiteReady ? "is-ready" : "is-loading"}`}>
+        <SiteLoader isVisible={!isSiteReady} progress={loaderProgress} />
         <Navbar onNavigate={scrollToSection} scrollContainer={wrapperRef} />
-        <div className={`wrapper ${isFading ? "section-fade-out" : ""}`} ref={wrapperRef}>
+        <div
+          className={`wrapper ${isFading ? "section-fade-out" : ""}`}
+          ref={wrapperRef}
+          aria-hidden={!isSiteReady}
+        >
           <div data-scroll-target="hero" className='z-10'>
             <Hero scrollContainer={wrapperRef} />
           </div>

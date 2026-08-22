@@ -62,6 +62,8 @@ const ProjectImageCarousel = ({ slides, activeSlide, onManualSlideChange }) => {
             key={`${item.name}-carousel-${imageIndex}`}
             src={item.src}
             alt={item.alt}
+            decoding="async"
+            loading="eager"
             className="portfolio-carousel__image"
           />
         ))}

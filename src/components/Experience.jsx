@@ -83,7 +83,7 @@ const ExperienceDetails = ({ experience, theme }) => {
       </div>
 
       <div className="service-detail__visual" aria-hidden="true">
-        <img src={experience.visual} alt={experience.visualAlt} />
+        <img src={experience.visual} alt={experience.visualAlt} decoding="async" loading="eager" />
         <span className="service-detail__scanline" />
         <span className="service-detail__annotation service-detail__annotation--top">
           {experience.annotationTop}
