@@ -445,8 +445,12 @@ body,
 }
 
 @keyframes parallax {
+  from {
+    transform: translate3d(var(--parallax-x, 0px), 0, 0) scale(var(--parallax-scale, 1));
+  }
+
   to {
-    transform: translateY(calc(var(--parallax-speed) * 1vh));
+    transform: translate3d(var(--parallax-x, 0px), calc(var(--parallax-speed) * 1vh), 0) scale(var(--parallax-scale, 1));
   }
 }
 
@@ -2045,7 +2049,15 @@ body,
       hue-rotate(2deg);
   }
 
-  .parallax__ground {
+  .parallax > .parallax__planets {
+    width: 50%;
+    justify-self: end;
+    --parallax-x: calc((100vw - 2000px) / 2);
+  }
+
+  .parallax > .parallax__ground {
+    width: 50%;
+    justify-self: start;
     transform: translateX(calc((2000px - 100vw) / 2));
   }
 
