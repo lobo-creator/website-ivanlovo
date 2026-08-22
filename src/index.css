@@ -2022,6 +2022,16 @@ body,
 }
 
 @media (max-width: 767px) {
+  .streaky-glow {
+    animation: none;
+    background: none;
+    color: #f7fbff;
+    -webkit-text-fill-color: #f7fbff;
+    text-shadow:
+      0 0 12px rgba(121, 243, 255, 0.28),
+      0 0 20px rgba(255, 142, 245, 0.18);
+  }
+
   .cyborgwolf-abduction-beam {
     opacity: 0.82;
     filter: brightness(1.14) saturate(1.08);
