@@ -73,11 +73,12 @@ const getRendererConfig = () => {
 
   const width = window.innerWidth;
   const isMobile = width < 768;
-  const maxDpr = isMobile ? 1 : width < 1280 ? 1.35 : 1.65;
+  const maxDpr = isMobile ? 0.82 : width < 1280 ? 1.35 : 1.65;
+  const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
 
   return {
     antialias: !isMobile,
-    dpr: [1, Math.min(window.devicePixelRatio || 1, maxDpr)],
+    dpr: isMobile ? dpr : [1, dpr],
     isMobile,
   };
 };
@@ -124,7 +125,7 @@ const getModelLayout = () => {
   };
 };
 
-const CyborgWolf = ({ rotationRef, scale, position }) => {
+const CyborgWolf = ({ rotationRef, scale, position, isMobile }) => {
   const cyborgWolfRef = useRef();
   const { scene, animations } = useGLTF(cyborgWolfScene);
   const { actions } = useAnimations(animations, cyborgWolfRef);
@@ -161,7 +162,7 @@ const CyborgWolf = ({ rotationRef, scale, position }) => {
 
     const targetRotationX = (rotationRef.current?.x ?? 0) + 0.5;
     const targetRotationY = LEFT_FACING_ROTATION_Y + (rotationRef.current?.y ?? 0);
-    const damping = Math.min(1, delta * 8);
+    const damping = Math.min(1, delta * (isMobile ? 18 : 8));
 
     cyborgWolfRef.current.rotation.x = THREE.MathUtils.lerp(
       cyborgWolfRef.current.rotation.x,
@@ -196,10 +197,7 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
     const container = scrollContainer.current;
     if (!container) return;
 
-    let scrollFrame = 0;
-
     const updateRotation = () => {
-      scrollFrame = 0;
       const scrollTop = container.scrollTop;
 
       rotationRef.current.x = scrollTop * -0.0016;
@@ -207,8 +205,7 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
     };
 
     const handleScroll = () => {
-      if (scrollFrame) return;
-      scrollFrame = window.requestAnimationFrame(updateRotation);
+      updateRotation();
     };
 
     const handleResize = () => {
@@ -217,12 +214,11 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
     };
 
     handleResize();
-    handleScroll();
+    updateRotation();
     container.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.cancelAnimationFrame(scrollFrame);
       container.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
@@ -271,6 +267,7 @@ const CyborgWolfCanvas = ({ scrollContainer }) => {
           rotationRef={rotationRef}
           scale={modelLayout.scale}
           position={modelLayout.position}
+          isMobile={rendererConfig.isMobile}
         />
       </Suspense>
     </Canvas>
