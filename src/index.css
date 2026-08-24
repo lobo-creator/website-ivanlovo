@@ -2059,7 +2059,7 @@ body,
     width: 50%;
     justify-self: start;
     position: absolute;
-    bottom: 5%;
+    bottom: 2%;
     transform: translateX(calc((2000px - 100vw) / 2));
   }
 
