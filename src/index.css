@@ -240,7 +240,6 @@ body,
 .parallax {
   position: relative;
   min-height: 75vh;
-  max-height: 120vh;
   min-width: 2000px;
   width: 100%;
   left: 50%; /* Center the image horizontally */
@@ -2060,7 +2059,7 @@ body,
     width: 50%;
     justify-self: start;
     position: absolute;
-    bottom: 0;
+    bottom: 5%;
     transform: translateX(calc((2000px - 100vw) / 2));
   }
 
